@@ -6,7 +6,7 @@
 //
 //*****************************************//
 
-#include "sysextest.h"
+#include "babygnusbsysex.h"
 
 
 void BabyGnusbSysexCommander::reset()
