@@ -54,6 +54,9 @@
 #include "pgm.h"
 #include "usbasp.h"
 
+#include "babygnusbsysex.h"
+
+
 #if defined(HAVE_LIBUSB) || defined(HAVE_usb_1_0)
 
 #ifdef HAVE_usb_1_0
@@ -302,6 +305,13 @@ static void usbasp_setup(PROGRAMMER * pgm)
     exit(1);
   }
   memset(pgm->cookie, 0, sizeof(struct pdata));
+
+BabyGnusbSysexCommander * babygnusbkicker = some_class_new();
+
+some_class_some_method(babygnusbkicker);
+
+some_class_delete(babygnusbkicker);
+
   gnubl();    // kick any device by [a n y m a ] into the bootloader
   
 }
