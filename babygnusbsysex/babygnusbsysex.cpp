@@ -69,7 +69,7 @@ EXPORT_C void some_class_delete(BabyGnusbSysexCommander* _this)
     delete _this;
 }
 
-EXPORT_C void some_class_some_method(BabyGnusbSysexCommander* _this, float f)
+EXPORT_C void some_class_some_method(BabyGnusbSysexCommander* _this)
 {
     _this->reset();
 }

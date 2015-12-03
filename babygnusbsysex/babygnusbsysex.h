@@ -48,4 +48,4 @@ typedef struct BabyGnusbSysexCommander BabyGnusbSysexCommander;
 
 EXPORT_C BabyGnusbSysexCommander* some_class_new(void);
 EXPORT_C void some_class_delete(BabyGnusbSysexCommander*);
-EXPORT_C void some_class_some_method(BabyGnusbSysexCommander*, float);
+EXPORT_C void some_class_some_method(BabyGnusbSysexCommander*);
