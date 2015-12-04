@@ -436,7 +436,7 @@ else
 endif
 
 DEFAULT_INCLUDES += -I../babygnusbsysex
-avrdude_LDADD    += ../babygnusbsysex/libgnusb.a ../babygnusbsysex/sysextest.o ../babygnusbsysex/Release/RtMidi.o -lstdc++ 
+babygnusb_LDADD    += ../babygnusbsysex/babygnusbsysex.o ../babygnusbsysex/Release/RtMidi.o -lstdc++ 
 
 libavrdude_a_SOURCES = \
 	config_gram.y \
@@ -647,7 +647,7 @@ clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
 avrdude$(EXEEXT): $(avrdude_OBJECTS) $(avrdude_DEPENDENCIES) $(EXTRA_avrdude_DEPENDENCIES) 
 	@rm -f avrdude$(EXEEXT)
-	$(avrdude_LINK) $(avrdude_OBJECTS) $(avrdude_LDADD) $(LIBS)
+	$(avrdude_LINK) $(avrdude_OBJECTS) $(babygnusb_LDADD) $(avrdude_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
