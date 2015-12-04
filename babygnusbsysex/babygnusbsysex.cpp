@@ -23,7 +23,7 @@ void BabyGnusbSysexCommander::reset()
   nPorts = midiout->getPortCount();
   
   for ( i=0; i<nPorts; i++ ) {
-    std::cout << "wewkokvisa\n";
+
     portName = midiout->getPortName(i);
     std::cout << "  Output port #" << i << ": " << portName << '\n';
 
@@ -49,7 +49,8 @@ void BabyGnusbSysexCommander::reset()
     message.push_back( 0xF7 );
 
     midiout->sendMessage( &message );
-    SLEEP(1000);
+    std::cout << "message sent, wait 4.0 secs\n";
+    SLEEP(4000);
 
   }else{
     std::cout << "babygnusbuino not detected\n";
