@@ -42,6 +42,9 @@
 #include "babygnusbsysex.h"
 
 
+BabyGnusbSysexCommander* babygnusbuino_sysex_commander;
+
+
 #if defined(HAVE_LIBUSB) || defined(HAVE_LIBUSB_1_0)
 
 #ifdef HAVE_LIBUSB_1_0
@@ -186,10 +189,9 @@ static void usbasp_setup(PROGRAMMER * pgm)
     exit(1);
   }
   memset(pgm->cookie, 0, sizeof(struct pdata));
-  printf("usbasp_setup\n");
-      BabyGnusbSysexCommander* babyKicker = some_class_new();
-  some_class_some_method(babyKicker);
-  some_class_delete(babyKicker);
+  // printf("usbasp_setup\n");
+  babygnusbuino_sysex_commander = babygnusbuino_sysex_create();
+  babygnusbuino_sysex_send_reset(babygnusbuino_sysex_commander);
 
 }
 
@@ -206,7 +208,7 @@ static int usbasp_transmit(PROGRAMMER * pgm,
                unsigned char receive, unsigned char functionid,
                unsigned char send[4], unsigned char * buffer, int buffersize)
 {
-  printf("usbasp transmit\n");
+//  printf("usbasp transmit\n");
   int nbytes;
 #ifdef USE_LIBUSB_1_0
   nbytes = libusb_control_transfer(PDATA(pgm)->usbhandle,
@@ -417,7 +419,7 @@ static int           didUsbInit = 0;
 static int usbasp_open(PROGRAMMER * pgm, char * port)
 {
   /* usb_init will be done in usbOpenDevice */
-  printf("usbasp open\n");
+//  printf("usbasp open\n");
   if (usbOpenDevice(&PDATA(pgm)->usbhandle, pgm->usbvid, pgm->usbvendor,
           pgm->usbpid, pgm->usbproduct) != 0) {
     /* try alternatives */
@@ -470,7 +472,9 @@ static int usbasp_open(PROGRAMMER * pgm, char * port)
 
 static void usbasp_close(PROGRAMMER * pgm)
 {
-printf("done.");
+
+  printf("done..");
+
   if (PDATA(pgm)->usbhandle!=NULL) {
     unsigned char temp[4];
     memset(temp, 0, sizeof(temp));
@@ -492,6 +496,9 @@ printf("done.");
 #else
   /* nothing for usb 0.1 ? */
 #endif
+
+babygnusbuino_sysex_delete(babygnusbuino_sysex_commander);
+
 }
 
 
@@ -522,7 +529,7 @@ static int usbasp_initialize(PROGRAMMER * pgm, AVRPART * p)
   unsigned char temp[4];
   unsigned char res[4];
   IMPORT_PDATA(pgm);
-printf("initialize\n");
+// printf("initialize\n");
 
   /* get capabilities */
   memset(temp, 0, sizeof(temp));
@@ -1144,7 +1151,7 @@ static int usbasp_tpi_write_byte(PROGRAMMER * pgm, AVRPART * p, AVRMEM * m, unsi
 
 void usbasp_initpgm(PROGRAMMER * pgm)
 {
-  printf("holaaa\n");
+//  printf("holaaa\n");
   strcpy(pgm->type, "usbasp");
 
   /*

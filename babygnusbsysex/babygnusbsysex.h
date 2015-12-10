@@ -1,5 +1,3 @@
-
-
 #ifdef __cplusplus // only actually define the class if this is C++
 
 #include <typeinfo>
@@ -25,7 +23,8 @@ public:
   BabyGnusbSysexCommander()
   {
 
-  }
+  };
+  ~BabyGnusbSysexCommander();
   void reset();
 };
 
@@ -33,6 +32,7 @@ public:
 #else
 
 // C doesn't know about classes, just say it's a struct
+
 typedef struct BabyGnusbSysexCommander BabyGnusbSysexCommander; 
 
 #endif
@@ -46,6 +46,6 @@ typedef struct BabyGnusbSysexCommander BabyGnusbSysexCommander;
 #endif
 
 
-EXPORT_C BabyGnusbSysexCommander* some_class_new(void);
-EXPORT_C void some_class_delete(BabyGnusbSysexCommander*);
-EXPORT_C void some_class_some_method(BabyGnusbSysexCommander*);
+EXPORT_C BabyGnusbSysexCommander* babygnusbuino_sysex_create(void);
+EXPORT_C void babygnusbuino_sysex_delete(BabyGnusbSysexCommander*);
+EXPORT_C void babygnusbuino_sysex_send_reset(BabyGnusbSysexCommander*);
