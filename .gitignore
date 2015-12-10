@@ -1,3 +1,4 @@
 *.o
 .deps
 libavrdude_a-avrftdi.o
+avrdude.creator.user
