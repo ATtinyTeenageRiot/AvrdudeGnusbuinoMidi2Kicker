@@ -60,6 +60,9 @@
 /* Linux sysfs GPIO support enabled */
 #undef HAVE_LINUXGPIO
 
+/* Enable the midisysex */
+#undef HAVE_MIDISYSEX
+
 /* Define to 1 if you have the <lusb0_usb.h> header file. */
 #undef HAVE_LUSB0_USB_H
 
