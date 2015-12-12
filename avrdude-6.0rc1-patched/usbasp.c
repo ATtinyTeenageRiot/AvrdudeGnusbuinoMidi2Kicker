@@ -39,6 +39,16 @@
 #include "pgm.h"
 #include "usbasp.h"
 
+// #include "babygnusbsysex.h"
+
+
+// BabyGnusbSysexCommander* babygnusbuino_sysex_commander;
+
+
+#define USBDEV_SHARED_VENDOR    0x16c0  /* VOTI */
+#define USBDEV_SHARED_PRODUCT_MIDI 0x05e4 /* Obdev's free shared PID for MIDI devices*/
+#define GNUSB_CMD_START_BOOTLOADER 	0xf8
+
 #ifdef WIN32NATIVE
 #include <windows.h>
 #else
@@ -423,6 +433,27 @@ static int           didUsbInit = 0;
 #endif
 
 
+int usbasp_detect_babymidignusbuino()
+{
+    libusb_device_handle *handle = NULL;
+    //fprintf(stderr, "USBID : %i", USBDEV_SHARED_VENDOR);
+    usbOpenDevice(&handle, USBDEV_SHARED_VENDOR, "www.anyma.ch", USBDEV_SHARED_PRODUCT_MIDI, NULL);
+
+    if(handle != NULL){
+        fprintf(stderr, "\n> midibabygnusbuino found sending start bootloader command ... \n");
+        libusb_control_transfer(handle, LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE | LIBUSB_ENDPOINT_IN, GNUSB_CMD_START_BOOTLOADER, 0,0,NULL,0,5000 );
+        libusb_close(handle);
+        return 1;
+    }else{
+        fprintf(stderr, "\n> not found ... \n");
+        return 0;
+    }
+
+
+}
+
+
+
 /* Interface - prog. */
 static int usbasp_try_open(PROGRAMMER * pgm, char * port)
 {
@@ -486,9 +517,13 @@ static int usbasp_open(PROGRAMMER * pgm, char * port)
     int timeout = 10; // 10 sec time out
     time_t start_time, current_time;
 
+    fprintf(stderr, "\n> Detecting MIDIBabygnusbuino ... \n");
 
+    if (!usbasp_detect_babymidignusbuino())
+    {
         fprintf(stderr, "\n> PLease plug in the device ... \n");
         fprintf(stderr, "\n> Press CTRL+C to terminate the program.\n");
+    }
 
     time(&start_time);
 
