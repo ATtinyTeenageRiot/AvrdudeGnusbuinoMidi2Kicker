@@ -625,7 +625,12 @@ static int usbasp_spi_chip_erase(PROGRAMMER * pgm, AVRPART * p)
 
   avr_set_bits(p->op[AVR_OP_CHIP_ERASE], cmd);
   pgm->cmd(pgm, cmd, res);
-  usleep(p->chip_erase_delay);
+if (p->stk500_devcode == 0x14)  { // stk500 device signature for tiny45/85
+  // delay long enough for USBaspLoader-tiny85 to erase all pages individually
+    usleep(500000);
+  } else {
+    usleep(p->chip_erase_delay);
+  }
   pgm->initialize(pgm, p);
 
   return 0;
@@ -722,6 +727,18 @@ static int usbasp_spi_paged_write(PROGRAMMER * pgm, AVRPART * p, AVRMEM * m,
      blocksize = USBASP_WRITEBLOCKSIZE;
   }
 
+  /* set blocksize to pagesize, so there can be a pause in USB traffic between pages to allow USBaspLoader-tiny85 to
+   * write the page to flash before needing to respond to the next USB message */
+   if (p->stk500_devcode == 0x14)  {
+/*      fprintf(stderr, "%s: hi tiny85\n",
+        progname); */
+
+      blocksize = page_size;
+  } else {
+  //      fprintf(stderr, "%s: not a tiny85\n",progname);
+  }
+
+
   while (wbytes) {
 
     if (wbytes <= blocksize) {
@@ -751,6 +768,10 @@ static int usbasp_spi_paged_write(PROGRAMMER * pgm, AVRPART * p, AVRMEM * m,
     blockflags = 0;
 
     n = usbasp_transmit(pgm, 0, function, cmd, buffer, blocksize);
+
+    if (p->stk500_devcode == 0x14)  {   // give some more time for tiny85 bootloader
+      usleep(12000);
+    }
 
     if (n != blocksize) {
       fprintf(stderr, "%s: error: wrong count at writing %x\n",
