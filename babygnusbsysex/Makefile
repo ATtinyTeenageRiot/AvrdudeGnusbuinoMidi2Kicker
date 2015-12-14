@@ -5,7 +5,7 @@
 
 
 
-PROGRAMS = sysextest
+PROGRAMS = babygnusbsysex
 
 CC	   = g++
 
@@ -45,8 +45,8 @@ endif
 
 all : $(PROGRAMS)
 
-sysextest : sysextest.cpp $(OBJECTS)
-	$(CC) $(CFLAGS) $(DEFS) -c sysextest.cpp
+babygnusbsysex : babygnusbsysex.cpp $(OBJECTS)
+	$(CC) $(CFLAGS) $(DEFS) -c babygnusbsysex.cpp
 
 clean : 
 	$(RM) -f $(OBJECT_PATH)/*.o
