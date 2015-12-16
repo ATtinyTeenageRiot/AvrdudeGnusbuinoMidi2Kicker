@@ -39,10 +39,9 @@
 #include "pgm.h"
 #include "usbasp.h"
 
-// #include "babygnusbsysex.h"
+#include "babygnusbsysex.h"
 
-
-// BabyGnusbSysexCommander* babygnusbuino_sysex_commander;
+BabyGnusbSysexCommander* babygnusbuino_sysex_commander;
 
 
 #define USBDEV_SHARED_VENDOR    0x16c0  /* VOTI */
