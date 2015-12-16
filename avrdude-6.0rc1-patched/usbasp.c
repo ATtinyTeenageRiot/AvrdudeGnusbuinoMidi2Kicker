@@ -438,13 +438,11 @@ int usbasp_detect_babymidignusbuino()
     //fprintf(stderr, "USBID : %i", USBDEV_SHARED_VENDOR);
     usbOpenDevice(&handle, USBDEV_SHARED_VENDOR, "www.anyma.ch", USBDEV_SHARED_PRODUCT_MIDI, NULL);
 
-    if(handle != NULL){
-        fprintf(stderr, "\n> midibabygnusbuino found sending start bootloader command ... \n");
+    if(handle != NULL){        
         libusb_control_transfer(handle, LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE | LIBUSB_ENDPOINT_IN, GNUSB_CMD_START_BOOTLOADER, 0,0,NULL,0,5000 );
         libusb_close(handle);
         return 1;
     }else{
-        fprintf(stderr, "\n> not found ... \n");
         return 0;
     }
 
@@ -520,8 +518,11 @@ static int usbasp_open(PROGRAMMER * pgm, char * port)
 
     if (!usbasp_detect_babymidignusbuino())
     {
+        fprintf(stderr, "\n> MIDIBabygnusbuino not found ... \n");
         fprintf(stderr, "\n> PLease plug in the device ... \n");
         fprintf(stderr, "\n> Press CTRL+C to terminate the program.\n");
+    }else{
+        fprintf(stderr, "\n> MIDIBabygnusbuino found sending start bootloader command ... \n");
     }
 
     time(&start_time);
