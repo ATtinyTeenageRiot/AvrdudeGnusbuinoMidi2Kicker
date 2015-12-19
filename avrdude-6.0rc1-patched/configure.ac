@@ -288,19 +288,6 @@ AC_ARG_ENABLE(
 		esac],
 	[enabled_linuxgpio=no])	
 
-AC_ARG_ENABLE(
-	[midisysex],
-	AC_HELP_STRING(
-		[--enable-midisysex],
-		[Enable the midisysex]),
-	[case "${enableval}" in
-		yes) enabled_midisysex=yes ;;
-		no)  enabled_midisysex=no ;;
-		*)   AC_MSG_ERROR(bad value ${enableval} for enable-midisysex option) ;;
-		esac],
-	[enabled_midisysex=no])	
-
-
 DIST_SUBDIRS_AC='doc windows'
 
 if test "$enabled_doc" = "yes"; then
@@ -377,13 +364,6 @@ else
 	confsubst="$confsubst -e /^@HAVE_LINUXGPIO_BEGIN@/,/^@HAVE_LINUXGPIO_END@/d"
 fi
 
-
-if test "$enabled_midisysex" = "yes"; then
-	AC_DEFINE(HAVE_MIDISYSEX, 1, [midisysex enabled])
-	confsubst="$confsubst -e /^@HAVE_MIDISYSEX_/d"
-else
-	confsubst="$confsubst -e /^@HAVE_MIDISYSEX_BEGIN@/,/^@HAVE_MIDISYSEX_END@/d"
-fi
 
 # If we are compiling with gcc, enable all warning and make warnings errors.
 if test "$GCC" = yes; then
