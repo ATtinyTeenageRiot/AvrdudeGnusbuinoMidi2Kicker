@@ -39,6 +39,25 @@
 #include "pgm.h"
 #include "usbasp.h"
 
+#ifdef WIN32NATIVE
+#include <windows.h>
+#else
+#include <unistd.h>
+#endif
+
+
+/* Delay in miliseconds */
+void delay(unsigned int duration) {
+    #if defined WIN32NATIVE
+        // use windows sleep api with milliseconds
+        // * 2 to make it run at half speed, because windows seems to have some trouble with this...
+        Sleep(duration * 2);
+    #else
+        // use standard unix api with microseconds
+        usleep(duration*1000);
+    #endif
+}
+
 #if defined(HAVE_LIBUSB) || defined(HAVE_LIBUSB_1_0)
 
 #ifdef HAVE_LIBUSB_1_0
@@ -405,7 +424,7 @@ static int           didUsbInit = 0;
 
 
 /* Interface - prog. */
-static int usbasp_open(PROGRAMMER * pgm, char * port)
+static int usbasp_try_open(PROGRAMMER * pgm, char * port)
 {
   /* usb_init will be done in usbOpenDevice */
   if (usbOpenDevice(&PDATA(pgm)->usbhandle, pgm->usbvid, pgm->usbvendor,
@@ -442,20 +461,49 @@ static int usbasp_open(PROGRAMMER * pgm, char * port)
     /* no alternative found => fall through to generic error message */
     }
 
-    fprintf(stderr,
-            "%s: error: could not find USB device with vid=0x%x pid=0x%x",
-            progname, pgm->usbvid, pgm->usbpid);
-    if (pgm->usbvendor[0] != 0) {
-       fprintf(stderr, " vendor='%s'", pgm->usbvendor);
-    }
-    if (pgm->usbproduct[0] != 0) {
-       fprintf(stderr, " product='%s'", pgm->usbproduct);
-    }
-    fprintf(stderr,"\n");
+//    fprintf(stderr,
+//            "%s: error: could not find USB device with vid=0x%x pid=0x%x",
+//            progname, pgm->usbvid, pgm->usbpid);
+//    if (pgm->usbvendor[0] != 0) {
+//       fprintf(stderr, " vendor='%s'", pgm->usbvendor);
+//    }
+//    if (pgm->usbproduct[0] != 0) {
+//       fprintf(stderr, " product='%s'", pgm->usbproduct);
+//    }
+//    fprintf(stderr,"\n");
     return -1;
   }
 
   return 0;
+}
+
+
+
+/* Interface - prog. */
+static int usbasp_open(PROGRAMMER * pgm, char * port)
+{
+    int usbasp_handle = -1;
+    int timeout = 10; // 10 sec time out
+    time_t start_time, current_time;
+
+
+        fprintf(stderr, "\n> PLease plug in the device ... \n");
+        fprintf(stderr, "\n> Press CTRL+C to terminate the program.\n");
+
+    time(&start_time);
+
+    while (usbasp_handle  < 0) {
+        usbasp_handle = usbasp_try_open(pgm, port);
+        if (usbasp_handle > 0) break;
+        delay(250);
+        time(&current_time);
+        if (timeout && start_time + timeout < current_time) {
+            printf("> Timeout..\n");
+            break;
+        }
+    }
+
+    return usbasp_handle;
 }
 
 static void usbasp_close(PROGRAMMER * pgm)
