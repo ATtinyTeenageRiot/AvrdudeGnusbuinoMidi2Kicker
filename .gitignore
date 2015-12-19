@@ -10,9 +10,3 @@ avrdude-6.0rc1-patched/config_gram.c
 avrdude-6.0rc1-patched/config_gram.h
 avrdude-6.0rc1-patched/lexer.c
 avrdude-6.0rc1-patched/libavrdude.a
-avrdude-6.0rc1-patched/Makefile
-avrdude-6.0rc1-patched/stamp-h1
-avrdude-6.0rc1-patched/doc/Makefile
-avrdude-6.0rc1-patched/windows/Makefile
-avrdude-6.0rc1-patched/autom4te.cache
-avrdude-6.0rc1-patched/configure
