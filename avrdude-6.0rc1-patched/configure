@@ -748,6 +748,7 @@ enable_versioned_doc
 enable_doc
 enable_parport
 enable_linuxgpio
+enable_midisysex
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1389,6 +1390,7 @@ Optional Features:
   --enable-parport        Enable accessing parallel ports(default)
   --enable-linuxgpio      Enable the Linux sysfs GPIO interface programmer
                           type
+  --enable-midisysex      Enable the midisysex
 
 Some influential environment variables:
   CC          C compiler command
@@ -5799,6 +5801,19 @@ else
 fi
 
 
+# Check whether --enable-midisysex was given.
+if test "${enable_midisysex+set}" = set; then :
+  enableval=$enable_midisysex; case "${enableval}" in
+		yes) enabled_midisysex=yes ;;
+		no)  enabled_midisysex=no ;;
+		*)   as_fn_error $? "bad value ${enableval} for enable-midisysex option" "$LINENO" 5 ;;
+		esac
+else
+  enabled_midisysex=no
+fi
+
+
+
 DIST_SUBDIRS_AC='doc windows'
 
 if test "$enabled_doc" = "yes"; then
@@ -5889,6 +5904,15 @@ else
 	confsubst="$confsubst -e /^@HAVE_LINUXGPIO_BEGIN@/,/^@HAVE_LINUXGPIO_END@/d"
 fi
 
+
+if test "$enabled_midisysex" = "yes"; then
+
+$as_echo "#define HAVE_MIDISYSEX 1" >>confdefs.h
+
+	confsubst="$confsubst -e /^@HAVE_MIDISYSEX_/d"
+else
+	confsubst="$confsubst -e /^@HAVE_MIDISYSEX_BEGIN@/,/^@HAVE_MIDISYSEX_END@/d"
+fi
 
 # If we are compiling with gcc, enable all warning and make warnings errors.
 if test "$GCC" = yes; then
