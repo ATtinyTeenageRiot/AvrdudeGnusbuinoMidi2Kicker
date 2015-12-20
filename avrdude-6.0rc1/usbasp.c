@@ -51,6 +51,12 @@
 #endif
 
 
+#ifdef WIN32NATIVE
+#include "babygnusbsysex.h"
+BabyGnusbSysexCommander* babygnusbuino_sysex_commander;
+#endif
+
+
 /* Delay in miliseconds */
 void delay(unsigned int duration) {
     #if defined WIN32NATIVE
@@ -430,7 +436,8 @@ static int           didUsbInit = 0;
 int usbasp_babymidignusbuino_detect()
 {
 #if defined WIN32NATIVE
-    return 0;
+    babygnusbuino_sysex_commander = babygnusbuino_sysex_create();
+    return babygnusbuino_sysex_detect(babygnusbuino_sysex_commander);
 #else
 
     libusb_device_handle *handle = NULL;
@@ -452,7 +459,8 @@ int usbasp_babymidignusbuino_kick()
 {
 
 #if defined WIN32NATIVE
-    return 0;
+    babygnusbuino_sysex_send_reset(babygnusbuino_sysex_commander);
+    return 1;
 #else
 libusb_device_handle *handle = NULL;
 usbOpenDevice(&handle, USBDEV_SHARED_VENDOR, "www.anyma.ch", USBDEV_SHARED_PRODUCT_MIDI, NULL);
@@ -582,6 +590,11 @@ static void usbasp_close(PROGRAMMER * pgm)
 #else
   /* nothing for usb 0.1 ? */
 #endif
+
+#ifdef WIN32NATIVE
+babygnusbuino_sysex_delete(babygnusbuino_sysex_commander);
+#endif
+
 }
 
 
