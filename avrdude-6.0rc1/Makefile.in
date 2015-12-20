@@ -414,10 +414,10 @@ ifeq ($(OS),Windows_NT)
         avrdude_CFLAGS += -D__WINDOWS_MM__      
         avrdude_LDADD += -lwinmm                                                                                                                            
     endif
+    DEFAULT_INCLUDES += -I../babygnusbsysex
+	babygnusb_LDADD    += ../babygnusbsysex/babygnusbsysex.o ../babygnusbsysex/Release/RtMidi.o -lstdc++ 
 endif
 
-DEFAULT_INCLUDES += -I../babygnusbsysex
-babygnusb_LDADD    += ../babygnusbsysex/babygnusbsysex.o ../babygnusbsysex/Release/RtMidi.o -lstdc++ 
 
 libavrdude_a_SOURCES = \
 	config_gram.y \
@@ -628,12 +628,8 @@ clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
 avrdude$(EXEEXT): $(avrdude_OBJECTS) $(avrdude_DEPENDENCIES) $(EXTRA_avrdude_DEPENDENCIES) 
 	@rm -f avrdude$(EXEEXT)
-
-	ifeq ($(OS),Windows_NT)
 	$(avrdude_LINK) $(avrdude_OBJECTS) $(babygnusb_LDADD) $(avrdude_LDADD) $(LIBS)
-	else
-	$(avrdude_LINK) $(avrdude_OBJECTS) $(avrdude_LDADD) $(LIBS)
-	endif
+
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
