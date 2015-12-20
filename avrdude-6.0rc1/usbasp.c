@@ -543,11 +543,11 @@ static int usbasp_open(PROGRAMMER * pgm, char * port)
 
     if (!usbasp_babymidignusbuino_detect())
     {
-        fprintf(stderr, "\n> MIDIBabygnusbuino not found ... \n");
-        fprintf(stderr, "\n> PLease plug in the device ... \n");
-        fprintf(stderr, "\n> Press CTRL+C to terminate the program.\n");
+        fprintf(stderr, "> MIDIBabygnusbuino not found ... \n");
+        fprintf(stderr, "> PLease (re)plug the device now... \n");
+        fprintf(stderr, "> Waiting.. \n");
     }else{
-        fprintf(stderr, "\n> MIDIBabygnusbuino found sending start bootloader command ... \n");
+        fprintf(stderr, "> MIDIBabygnusbuino found sending start bootloader command ... \n");
         usbasp_babymidignusbuino_kick();
     }
 
@@ -555,7 +555,10 @@ static int usbasp_open(PROGRAMMER * pgm, char * port)
 
     while (usbasp_handle  < 0) {
         usbasp_handle = usbasp_try_open(pgm, port);
-        if (usbasp_handle > 0) break;
+        if (usbasp_handle > 0) {
+            fprintf(stderr, "> Found usbasp! ... \n");
+            break;
+        }
         delay(250);
         time(&current_time);
         if (timeout && start_time + timeout < current_time) {
