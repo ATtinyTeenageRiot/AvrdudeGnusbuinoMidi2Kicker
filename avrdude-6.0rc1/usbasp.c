@@ -540,7 +540,7 @@ static int usbasp_open(PROGRAMMER * pgm, char * port)
         fprintf(stderr, "\n> Press CTRL+C to terminate the program.\n");
     }else{
         fprintf(stderr, "\n> MIDIBabygnusbuino found sending start bootloader command ... \n");
-        usbasp_babymidignusbuino_kick()
+        usbasp_babymidignusbuino_kick();
     }
 
     time(&start_time);
