@@ -13,14 +13,14 @@ void BabyGnusbSysexCommander::reset()
 {
     std::vector<unsigned char> message;
 
-    std::cout << ">> sending kick sysex message!\n";
+    std::cerr << ">> sending kick sysex message!\n";
 
     message.push_back( 0xF0 );
     message.push_back( 0x08 );
     message.push_back( 0xF7 );
 
     midiout->sendMessage( &message );
-    std::cout << ">> message sent, wait 1.5 secs\n";
+    std::cerr << ">> message sent, wait 1.5 secs\n";
     SLEEP(1500);
 
 }
@@ -32,7 +32,7 @@ BabyGnusbSysexCommander::~BabyGnusbSysexCommander()
 
 bool BabyGnusbSysexCommander::detect()
 {
-   std::cout << ">> sysex detect\n";
+   std::cerr << ">> sysex detect\n";
 
    midiout = new RtMidiOut();
    std::string portName;
@@ -42,7 +42,7 @@ bool BabyGnusbSysexCommander::detect()
     for ( unsigned int i=0; i<nPorts; i++ ) {
 
       portName = midiout->getPortName(i);
-//      std::cout << "  Output port #" << i << ": " << portName << '\n';
+     std::cerr << "  Output port #" << i << ": " << portName << '\n';
 
       if (portName == "babygnusbuino")
       {
