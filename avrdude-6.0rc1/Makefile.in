@@ -414,25 +414,6 @@ ifeq ($(OS),Windows_NT)
         avrdude_CFLAGS += -D__WINDOWS_MM__      
         avrdude_LDADD += -lwinmm                                                                                                                            
     endif
-else
-    UNAME_S := $(shell uname -s)
-    ifeq ($(UNAME_S),Linux)
-
-    endif
-    ifeq ($(UNAME_S),Darwin)
-        avrdude_CFLAGS += -D__MACOSX_CORE__
-		avrdude_LDADD += -framework CoreMIDI -framework CoreFoundation -framework CoreAudio
-    endif
-    UNAME_P := $(shell uname -p)
-    ifeq ($(UNAME_P),x86_64)
-
-    endif
-    ifneq ($(filter %86,$(UNAME_P)),)
-
-    endif
-    ifneq ($(filter arm%,$(UNAME_P)),)
-
-    endif
 endif
 
 DEFAULT_INCLUDES += -I../babygnusbsysex
@@ -647,7 +628,12 @@ clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
 avrdude$(EXEEXT): $(avrdude_OBJECTS) $(avrdude_DEPENDENCIES) $(EXTRA_avrdude_DEPENDENCIES) 
 	@rm -f avrdude$(EXEEXT)
+
+	ifeq ($(OS),Windows_NT)
 	$(avrdude_LINK) $(avrdude_OBJECTS) $(babygnusb_LDADD) $(avrdude_LDADD) $(LIBS)
+	else
+	$(avrdude_LINK) $(avrdude_OBJECTS) $(avrdude_LDADD) $(LIBS)
+	endif
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
