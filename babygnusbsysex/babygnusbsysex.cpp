@@ -13,48 +13,15 @@ void BabyGnusbSysexCommander::reset()
 {
     std::vector<unsigned char> message;
 
-  bool detected = false;
-
-  midiout = new RtMidiOut();
-
-  std::string portName;
-  unsigned int i = 0, 
-
-  nPorts = midiout->getPortCount();
-  
-  for ( i=0; i<nPorts; i++ ) {
-
-    portName = midiout->getPortName(i);
-    std::cout << "  Output port #" << i << ": " << portName << '\n';
-
-
-
-    if (portName == "babygnusbuino")
-    {
-      std::cout << "babygnusbuino detected.. connecting to midi port!\n";
-
-      midiout->openPort( i );
-      detected = true;
-      std::cout << "gnusbuino\n";
-    } 
-  }
-
-
-  if (detected)
-  {
-    std::cout << "sending kick sysex message!\n";
+    std::cout << ">> sending kick sysex message!\n";
 
     message.push_back( 0xF0 );
     message.push_back( 0x08 );
     message.push_back( 0xF7 );
 
     midiout->sendMessage( &message );
-    std::cout << "message sent, wait 1.5 secs\n";
+    std::cout << ">> message sent, wait 1.5 secs\n";
     SLEEP(1500);
-
-  }else{
-    std::cout << "babygnusbuino not detected\n";
-  }
 
 }
 
@@ -63,6 +30,27 @@ BabyGnusbSysexCommander::~BabyGnusbSysexCommander()
     delete(midiout);
 }
 
+bool BabyGnusbSysexCommander::detect()
+{
+   midiout = new RtMidiOut();
+   std::string portName;
+
+   unsigned int nPorts = midiout->getPortCount();
+
+    for ( unsigned int i=0; i<nPorts; i++ ) {
+
+      portName = midiout->getPortName(i);
+//      std::cout << "  Output port #" << i << ": " << portName << '\n';
+
+      if (portName == "babygnusbuino")
+      {
+//        std::cout << ">> babygnusbuino detected.. connecting to midi port!\n";
+        midiout->openPort( i );
+        return true;
+      }
+    }
+    return false;
+}
 
   // access functions
 EXPORT_C BabyGnusbSysexCommander* babygnusbuino_sysex_create(void)
@@ -73,6 +61,16 @@ EXPORT_C BabyGnusbSysexCommander* babygnusbuino_sysex_create(void)
 EXPORT_C void babygnusbuino_sysex_delete(BabyGnusbSysexCommander* _this)
 {
     delete _this;
+}
+
+EXPORT_C int babygnusbuino_sysex_detect(BabyGnusbSysexCommander* _this)
+{
+    if (_this->detect())
+    {
+        return 1
+    }else{
+        return 0
+    }
 }
 
 EXPORT_C void babygnusbuino_sysex_send_reset(BabyGnusbSysexCommander* _this)

@@ -19,6 +19,7 @@ class BabyGnusbSysexCommander
 {
 private:
   RtMidiOut *midiout;
+  int detected;
 public:
   BabyGnusbSysexCommander()
   {
@@ -26,6 +27,7 @@ public:
   };
   ~BabyGnusbSysexCommander();
   void reset();
+  bool detect();
 };
 
 
@@ -48,4 +50,5 @@ typedef struct BabyGnusbSysexCommander BabyGnusbSysexCommander;
 
 EXPORT_C BabyGnusbSysexCommander* babygnusbuino_sysex_create(void);
 EXPORT_C void babygnusbuino_sysex_delete(BabyGnusbSysexCommander*);
+EXPORT_C int babygnusbuino_sysex_detect(BabyGnusbSysexCommander*);
 EXPORT_C void babygnusbuino_sysex_send_reset(BabyGnusbSysexCommander*);
