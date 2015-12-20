@@ -427,24 +427,45 @@ static int           didUsbInit = 0;
 }
 #endif
 
-
-int usbasp_detect_babymidignusbuino()
+int usbasp_babymidignusbuino_detect()
 {
+#if defined WIN32NATIVE
+    return 0;
+#else
+
     libusb_device_handle *handle = NULL;
-    //fprintf(stderr, "USBID : %i", USBDEV_SHARED_VENDOR);
     usbOpenDevice(&handle, USBDEV_SHARED_VENDOR, "www.anyma.ch", USBDEV_SHARED_PRODUCT_MIDI, NULL);
 
-    if(handle != NULL){        
-        libusb_control_transfer(handle, LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE | LIBUSB_ENDPOINT_IN, GNUSB_CMD_START_BOOTLOADER, 0,0,NULL,0,5000 );
-        libusb_close(handle);
+    if(handle != NULL){
         return 1;
     }else{
         return 0;
     }
 
+    libusb_close(handle);
 
+#endif
 }
 
+
+int usbasp_babymidignusbuino_kick()
+{
+
+#if defined WIN32NATIVE
+    return 0;
+#else
+libusb_device_handle *handle = NULL;
+usbOpenDevice(&handle, USBDEV_SHARED_VENDOR, "www.anyma.ch", USBDEV_SHARED_PRODUCT_MIDI, NULL);
+if(handle != NULL){
+    libusb_control_transfer(handle, LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE | LIBUSB_ENDPOINT_IN, GNUSB_CMD_START_BOOTLOADER, 0,0,NULL,0,5000 );
+    libusb_close(handle);
+    return 1;
+}else{
+    return 0;
+}
+#endif
+
+}
 
 
 /* Interface - prog. */
@@ -512,13 +533,14 @@ static int usbasp_open(PROGRAMMER * pgm, char * port)
 
     fprintf(stderr, "\n> Detecting MIDIBabygnusbuino ... \n");
 
-    if (!usbasp_detect_babymidignusbuino())
+    if (!usbasp_babymidignusbuino_detect())
     {
         fprintf(stderr, "\n> MIDIBabygnusbuino not found ... \n");
         fprintf(stderr, "\n> PLease plug in the device ... \n");
         fprintf(stderr, "\n> Press CTRL+C to terminate the program.\n");
     }else{
         fprintf(stderr, "\n> MIDIBabygnusbuino found sending start bootloader command ... \n");
+        usbasp_babymidignusbuino_kick()
     }
 
     time(&start_time);
