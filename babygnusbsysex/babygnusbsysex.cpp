@@ -32,6 +32,8 @@ BabyGnusbSysexCommander::~BabyGnusbSysexCommander()
 
 bool BabyGnusbSysexCommander::detect()
 {
+   std::cout << ">> sysex detect\n";
+
    midiout = new RtMidiOut();
    std::string portName;
 
@@ -67,9 +69,9 @@ EXPORT_C int babygnusbuino_sysex_detect(BabyGnusbSysexCommander* _this)
 {
     if (_this->detect())
     {
-        return 1
+        return 1;
     }else{
-        return 0
+        return 0;
     }
 }
 
