@@ -539,6 +539,9 @@ static int usbasp_open(PROGRAMMER * pgm, char * port)
     int timeout = 10; // 10 sec time out
     time_t start_time, current_time;
 
+    int prev_time;
+    int _i = -1;
+
     fprintf(stderr, "\n> Detecting MIDIBabygnusbuino ... \n");
 
     if (!usbasp_babymidignusbuino_detect())
@@ -555,6 +558,18 @@ static int usbasp_open(PROGRAMMER * pgm, char * port)
 
     while (usbasp_handle  < 0) {
         usbasp_handle = usbasp_try_open(pgm, port);
+
+
+        if  (prev_time !=(int) current_time)
+        {
+            _i++;
+            fprintf(stderr, ">> %i sec until timeout\n" , timeout - _i);
+
+        }
+
+
+        prev_time = (int) current_time;
+
         if (usbasp_handle > 0) {
             fprintf(stderr, "> Found usbasp! ... \n");
             break;
