@@ -1,0 +1,4 @@
+gcc -DHAVE_CONFIG_H -I.  -DCONFIG_DIR=\"/usr/local/etc\"   -Wall -g -O0 -MT avrdude-main.o -MD -MP -MF .deps/avrdude-main.Tpo -c -o libavrdude-tester.o `test -f 'libavrdude-tester.c' || echo './'`libavrdude-tester.c
+
+gcc -Wall -g -O0   -o libavrdude-tester libavrdude-tester.o avrdude-term.o  ./libavrdude.a  -lusb-1.0     -lpthread -lm -lreadline -ltermcap 
+
