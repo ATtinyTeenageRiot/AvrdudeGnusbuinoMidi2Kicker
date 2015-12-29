@@ -194,7 +194,15 @@ int main(int argc, char * argv [])
             pgm_usbasp->setup(pgm_usbasp);
         }
 
+
+ 
     rc = pgm_usbasp->open(pgm_usbasp, "usb");
+           fprintf(stderr,
+                    "\n%i: Can't initialize the programmer.\n\n",
+                    rc);
+
+    if (rc == -1) return 0;
+
     pgm_usbasp->enable(pgm_usbasp);
 
     init_ok = (rc = pgm_usbasp->initialize(pgm_usbasp, attiny_85)) >= 0;
