@@ -386,9 +386,9 @@ static int           didUsbInit = 0;
                 if(len < 0){
                     if ((vendorName != NULL) && (vendorName[0] != 0)) {
                     errorCode = USB_ERROR_IO;
-                    fprintf(stderr,
-			    "%s: Warning: cannot query manufacturer for device: %s\n",
-			    progname, usb_strerror());
+                    // fprintf(stderr,
+			    // "%s: Warning: cannot query manufacturer for device: %s\n",
+			    // progname, usb_strerror());
 		    }
                 } else {
 		    if (verbose > 1)
@@ -404,9 +404,9 @@ static int           didUsbInit = 0;
                 if(len < 0){
                     if ((productName != NULL) && (productName[0] != 0)) {
                         errorCode = USB_ERROR_IO;
-                        fprintf(stderr,
-			        "%s: Warning: cannot query product for device: %s\n",
-			        progname, usb_strerror());
+                        // fprintf(stderr,
+			        // "%s: Warning: cannot query product for device: %s\n",
+			        // progname, usb_strerror());
 		    }
                 } else {
 		    if (verbose > 1)
@@ -586,26 +586,29 @@ static int usbasp_open(PROGRAMMER * pgm, char * port)
 
     time(&start_time);
 
-    while (found_usbasp == false) {
-        found_usbasp = usbasp_findusb(pgm, port);
+    while (usbasp_handle == -1) {
         time(&current_time);
+		
         if  (prev_time !=(int) current_time)
         {
             if(timeout - _i > -1)
             {
+				found_usbasp = usbasp_findusb(pgm, port);
+				if (found_usbasp) {
+					//fprintf(stderr, "> Found usbasp! ... \n");
+					usbasp_handle = usbasp_try_open(pgm, port);		
+					if (usbasp_handle > -1) break;			
+				}
+						
                 fprintf(stderr, "\n>> %i sec until timeout\n" , timeout - _i);
             }
             _i++;
         }
 
-
         prev_time = (int) current_time;
 
-        if (found_usbasp) {
-            fprintf(stderr, "> Found usbasp! ... \n");
-			usbasp_handle = usbasp_try_open(pgm, port);
-			break;			
-        }
+
+		
         delay(250);
         if (timeout && start_time + timeout < current_time) {
             printf("\n> Timeout..\n");
