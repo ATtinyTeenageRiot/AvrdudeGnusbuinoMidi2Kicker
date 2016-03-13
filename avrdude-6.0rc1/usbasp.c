@@ -530,11 +530,41 @@ static int usbasp_try_open(PROGRAMMER * pgm, char * port)
   return 0;
 }
 
+static int usbasp_findusb(PROGRAMMER * pgm, char * port)
+{
+	
+	 struct usb_bus *busses;
+
+  // intialise usb and find micronucleus device
+  usb_init();
+  usb_find_busses();
+  usb_find_devices();
+
+  busses = usb_get_busses();
+  struct usb_bus *bus;
+  for (bus = busses; bus; bus = bus->next) {
+    struct usb_device *dev;
+
+    for (dev = bus->devices; dev; dev = dev->next) {
+      /* Check if this device is a micronucleus */
+      if (dev->descriptor.idVendor == 5824 && dev->descriptor.idProduct == 1500)  {
+		return true;
+	  }else{
+		return false;
+	  }
+	}
+	
+  }
+  
+  return false;
+	
+}
 
 
 /* Interface - prog. */
 static int usbasp_open(PROGRAMMER * pgm, char * port)
 {
+	bool found_usbasp = false;
     int usbasp_handle = -1;
     int timeout = 10; // 10 sec time out
     time_t start_time, current_time;
@@ -542,25 +572,23 @@ static int usbasp_open(PROGRAMMER * pgm, char * port)
     int prev_time;
     int _i = 0;
 
-    fprintf(stderr, "\n> Detecting MIDIBabygnusbuino ... \n");
+    // fprintf(stderr, "\n> Detecting MIDIBabygnusbuino ... \n");
 
-    if (!usbasp_babymidignusbuino_detect())
-    {
-        fprintf(stderr, "> MIDIBabygnusbuino not found ... \n");
+    // if (!usbasp_babymidignusbuino_detect())
+    // {
+        // fprintf(stderr, "> MIDIBabygnusbuino not found ... \n");
         fprintf(stderr, "> PLease (re)plug the device now... \n");
         fprintf(stderr, "> Waiting.. \n");
-    }else{
-        fprintf(stderr, "> MIDIBabygnusbuino found sending start bootloader command ... \n");
-        usbasp_babymidignusbuino_kick();
-    }
+    // }else{
+        // fprintf(stderr, "> MIDIBabygnusbuino found sending start bootloader command ... \n");
+        // usbasp_babymidignusbuino_kick();
+    // }
 
     time(&start_time);
 
-    while (usbasp_handle  < 0) {
-        usbasp_handle = usbasp_try_open(pgm, port);
-
+    while (found_usbasp == false) {
+        found_usbasp = usbasp_findusb(pgm, port);
         time(&current_time);
-
         if  (prev_time !=(int) current_time)
         {
             if(timeout - _i > -1)
@@ -568,15 +596,15 @@ static int usbasp_open(PROGRAMMER * pgm, char * port)
                 fprintf(stderr, "\n>> %i sec until timeout\n" , timeout - _i);
             }
             _i++;
-
         }
 
 
         prev_time = (int) current_time;
 
-        if (usbasp_handle > 0) {
+        if (found_usbasp) {
             fprintf(stderr, "> Found usbasp! ... \n");
-            break;
+			usbasp_handle = usbasp_try_open(pgm, port);
+			break;			
         }
         delay(250);
         if (timeout && start_time + timeout < current_time) {
