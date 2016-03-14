@@ -193,8 +193,9 @@ a[8] =
 "        jgs      \\__/\n"
 "        ";
 
-
-    srand ( time(NULL) );
+    time_t start_time
+    time(&start_time)
+    srand (  (int) start_time);
     int random_number = rand();
     int N = 9;
     int rand_capped = random_number % N;  //between 0 and 32
