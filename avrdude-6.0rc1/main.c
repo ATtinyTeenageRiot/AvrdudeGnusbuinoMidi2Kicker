@@ -1420,6 +1420,18 @@ main_exit:
 
   if (quell_progress < 2) {
     fprintf(stderr, "\n%s done.  Thank you.\n\n", progname);
+    fprintf(stderr, 
+"  /\\/\\ MIAUW..  //\\\\\n"
+" / o.o\\--------//  `\n"
+" \\__^_/  SASHA  '|\n"
+"   \\        |   /\n"
+"   | \\ \\-----\\ \\ \\\n"
+"   (_/\\_\\    (_/\\_)\n\n\n"
+    );
+
+
+
+
   }
 
   return exitrc;
