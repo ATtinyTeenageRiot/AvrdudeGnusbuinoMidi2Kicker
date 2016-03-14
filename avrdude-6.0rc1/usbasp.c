@@ -193,8 +193,8 @@ a[8] =
 "        jgs      \\__/\n"
 "        ";
 
-    time_t start_time
-    time(&start_time)
+    time_t start_time;
+    time(&start_time);
     srand (  (int) start_time);
     int random_number = rand();
     int N = 9;
