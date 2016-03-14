@@ -530,6 +530,8 @@ static int usbasp_try_open(PROGRAMMER * pgm, char * port)
   return 0;
 }
 
+#ifndef USE_LIBUSB_1_0
+
 static int usbasp_findusb(PROGRAMMER * pgm, char * port)
 {
 	
@@ -559,11 +561,20 @@ static int usbasp_findusb(PROGRAMMER * pgm, char * port)
   return false;
 	
 }
+#else
 
+static int usbasp_findusb(PROGRAMMER * pgm, char * port)
+{
+
+}
+
+#endif
 
 /* Interface - prog. */
 static int usbasp_open(PROGRAMMER * pgm, char * port)
 {
+        setbuf(stderr, NULL);
+
 	bool found_usbasp = false;
     int usbasp_handle = -1;
     int timeout = 10; // 10 sec time out
@@ -576,9 +587,20 @@ static int usbasp_open(PROGRAMMER * pgm, char * port)
 
     // if (!usbasp_babymidignusbuino_detect())
     // {
+        fprintf(stderr, 
+        "                           (                \n"
+        "   *   )                   )\\ )          )  \n"
+        " ` )  /(  (   (       (   (()/((      ( /(  \n"
+        "  ( )(_))))\\ ))\\ (    )\\ ) /(_))\\  (  )\\()) \n"
+        " (_(_())/((_/((_))\\ )(()/((_))((_) )\\(_))/  \n"
+        " |_   _(_))(_)) _(_/( )(_)| _ \\(_)((_| |_   \n"
+        "   | | / -_/ -_| ' \\)| || |   /| / _ |  _|  \n"
+        "   |_| \\___\\___|_||_| \\_, |_|_\\|_\\___/\\__|  \n"
+        "                      |__/                  \n");
+
         // fprintf(stderr, "> MIDIBabygnusbuino not found ... \n");
-        fprintf(stderr, "> PLease (re)plug the device now... \n");
-        fprintf(stderr, "> Waiting.. \n");
+        fprintf(stderr, "> PLease replug your device now... \n");
+        fprintf(stderr, "> Waiting for %i seconds.. \n", timeout);
     // }else{
         // fprintf(stderr, "> MIDIBabygnusbuino found sending start bootloader command ... \n");
         // usbasp_babymidignusbuino_kick();
@@ -593,14 +615,23 @@ static int usbasp_open(PROGRAMMER * pgm, char * port)
         {
             if(timeout - _i > -1)
             {
+                #ifdef USE_LIBUSB_1_0
+
+                usbasp_handle = usbasp_try_open(pgm, port); 
+
+                #else
+
 				found_usbasp = usbasp_findusb(pgm, port);
+
 				if (found_usbasp) {
 					//fprintf(stderr, "> Found usbasp! ... \n");
 					usbasp_handle = usbasp_try_open(pgm, port);		
 					if (usbasp_handle > -1) break;			
 				}
+
+                #endif
 						
-                fprintf(stderr, "\n>> %i sec until timeout\n" , timeout - _i);
+                fprintf(stderr, " %i " , timeout - _i);
             }
             _i++;
         }
