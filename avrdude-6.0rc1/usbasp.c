@@ -1088,9 +1088,7 @@ static int usbasp_spi_paged_write(PROGRAMMER * pgm, AVRPART * p, AVRMEM * m,
   /* set blocksize to pagesize, so there can be a pause in USB traffic between pages to allow USBaspLoader-tiny85 to
    * write the page to flash before needing to respond to the next USB message */
    if (p->stk500_devcode == 0x14)  {
-/*      fprintf(stderr, "%s: hi tiny85\n",
-        progname); */
-
+      //fprintf(stderr, "%s: hi tiny85\n",progname); 
       blocksize = page_size;
   } else {
   //      fprintf(stderr, "%s: not a tiny85\n",progname);
@@ -1128,7 +1126,7 @@ static int usbasp_spi_paged_write(PROGRAMMER * pgm, AVRPART * p, AVRMEM * m,
     n = usbasp_transmit(pgm, 0, function, cmd, buffer, blocksize);
 
     if (p->stk500_devcode == 0x14)  {   // give some more time for tiny85 bootloader
-      usleep(12000);
+      usleep(24000);
     }
 
     if (n != blocksize) {
