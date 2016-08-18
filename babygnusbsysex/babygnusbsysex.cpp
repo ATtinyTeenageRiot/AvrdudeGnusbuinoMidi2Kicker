@@ -44,7 +44,7 @@ bool BabyGnusbSysexCommander::detect()
       portName = midiout->getPortName(i);
      std::cerr << "  Midi port #" << i << ": " << portName << '\n';
 
-      if (portName == "CocoMidi")
+      if (portName == "TeenageUSB")
       {
         std::cout << ">> CocoMidi detected.. connecting to midi port!\n";
         midiout->openPort( i );
