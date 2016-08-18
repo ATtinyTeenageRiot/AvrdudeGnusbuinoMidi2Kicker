@@ -33,6 +33,7 @@ else
 	UNAME_S := $(shell uname -s)
 	ifeq ($(UNAME_S),Linux)
 		CCFLAGS += -D LINUX
+		DEFS = -D__LINUX_ALSA__
 	endif
 	ifeq ($(UNAME_S),Darwin)
 		DEFS	 =   -D__MACOSX_CORE__

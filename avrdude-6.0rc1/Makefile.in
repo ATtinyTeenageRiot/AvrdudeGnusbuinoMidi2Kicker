@@ -417,7 +417,7 @@ ifeq ($(OS),Windows_NT)
 else
     UNAME_S := $(shell uname -s)
     ifeq ($(UNAME_S),Linux)
-
+        avrdude_LDADD += -lasound -lpthread
     endif
     ifeq ($(UNAME_S),Darwin)
         avrdude_CFLAGS += -D__MACOSX_CORE__
