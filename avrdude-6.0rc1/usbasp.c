@@ -736,6 +736,9 @@ static int usbasp_open(PROGRAMMER * pgm, char * port)
             fprintf(stderr, "> PLease replug your device now... \n");
         }
 
+        babygnusbuino_sysex_delete(babygnusbuino_sysex_commander);
+
+
         // fprintf(stderr, "> MIDIBabygnusbuino not found ... \n");
         fprintf(stderr, "> Waiting for %i seconds.. \n", timeout);
     // }else{
@@ -811,7 +814,6 @@ static void usbasp_close(PROGRAMMER * pgm)
   /* nothing for usb 0.1 ? */
 #endif
 
-babygnusbuino_sysex_delete(babygnusbuino_sysex_commander);
 
 }
 
