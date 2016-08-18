@@ -414,10 +414,29 @@ ifeq ($(OS),Windows_NT)
         avrdude_CFLAGS += -D__WINDOWS_MM__      
         avrdude_LDADD += -lwinmm                                                                                                                            
     endif
-    DEFAULT_INCLUDES += -I../babygnusbsysex
-	babygnusb_LDADD    += ../babygnusbsysex/babygnusbsysex.o ../babygnusbsysex/Release/RtMidi.o -lstdc++ 
+else
+    UNAME_S := $(shell uname -s)
+    ifeq ($(UNAME_S),Linux)
+
+    endif
+    ifeq ($(UNAME_S),Darwin)
+        avrdude_CFLAGS += -D__MACOSX_CORE__
+		avrdude_LDADD += -framework CoreMIDI -framework CoreFoundation -framework CoreAudio
+    endif
+    UNAME_P := $(shell uname -p)
+    ifeq ($(UNAME_P),x86_64)
+
+    endif
+    ifneq ($(filter %86,$(UNAME_P)),)
+
+    endif
+    ifneq ($(filter arm%,$(UNAME_P)),)
+
+    endif
 endif
 
+DEFAULT_INCLUDES += -I../babygnusbsysex
+babygnusb_LDADD    += ../babygnusbsysex/babygnusbsysex.o ../babygnusbsysex/Release/RtMidi.o -lstdc++ 
 
 libavrdude_a_SOURCES = \
 	config_gram.y \

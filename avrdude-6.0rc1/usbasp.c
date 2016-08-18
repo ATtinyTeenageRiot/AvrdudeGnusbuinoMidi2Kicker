@@ -51,10 +51,8 @@
 #endif
 
 
-#ifdef WIN32NATIVE
 #include "babygnusbsysex.h"
 BabyGnusbSysexCommander* babygnusbuino_sysex_commander;
-#endif
 
 
 /* Delay in miliseconds */
@@ -435,44 +433,15 @@ static int           didUsbInit = 0;
 
 int usbasp_babymidignusbuino_detect()
 {
-#if defined WIN32NATIVE
     babygnusbuino_sysex_commander = babygnusbuino_sysex_create();
     return babygnusbuino_sysex_detect(babygnusbuino_sysex_commander);
-#else
-
-    libusb_device_handle *handle = NULL;
-    usbOpenDevice(&handle, USBDEV_SHARED_VENDOR, "www.anyma.ch", USBDEV_SHARED_PRODUCT_MIDI, NULL);
-
-    if(handle != NULL){
-        return 1;
-    }else{
-        return 0;
-    }
-
-    libusb_close(handle);
-
-#endif
 }
 
 
 int usbasp_babymidignusbuino_kick()
 {
-
-#if defined WIN32NATIVE
     babygnusbuino_sysex_send_reset(babygnusbuino_sysex_commander);
     return 1;
-#else
-libusb_device_handle *handle = NULL;
-usbOpenDevice(&handle, USBDEV_SHARED_VENDOR, "www.anyma.ch", USBDEV_SHARED_PRODUCT_MIDI, NULL);
-if(handle != NULL){
-    libusb_control_transfer(handle, LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE | LIBUSB_ENDPOINT_IN, GNUSB_CMD_START_BOOTLOADER, 0,0,NULL,0,5000 );
-    libusb_close(handle);
-    return 1;
-}else{
-    return 0;
-}
-#endif
-
 }
 
 
@@ -733,10 +702,7 @@ static int usbasp_open(PROGRAMMER * pgm, char * port)
     int prev_time;
     int _i = 0;
 
-    // fprintf(stderr, "\n> Detecting MIDIBabygnusbuino ... \n");
 
-    // if (!usbasp_babymidignusbuino_detect())
-    // {
 
 
         fprintf(stderr, 
@@ -758,6 +724,16 @@ static int usbasp_open(PROGRAMMER * pgm, char * port)
 
         print_ascii_art();
 
+
+        fprintf(stderr, "\n> Detecting CocoMidi ... \n");
+
+        if (usbasp_babymidignusbuino_detect())
+        {
+            fprintf(stderr, "\n> CocoMidi detected  ... trying to reset device \n");
+            usbasp_babymidignusbuino_kick();
+        }else{
+            fprintf(stderr, "\n> CocoMidi not detected  ... \n");
+        }
 
         // fprintf(stderr, "> MIDIBabygnusbuino not found ... \n");
         fprintf(stderr, "> PLease replug your device now... \n");
