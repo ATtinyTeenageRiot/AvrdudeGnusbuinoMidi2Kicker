@@ -42,7 +42,7 @@ bool BabyGnusbSysexCommander::detect()
     for ( unsigned int i=0; i<nPorts; i++ ) {
 
       portName = midiout->getPortName(i);
-     std::cerr << "  Midi port #" << i << ": " << portName << '\n';
+      //std::cerr << "  Midi port #" << i << ": " << portName << '\n';
 
       if (portName == "TeenageUSB")
       {
