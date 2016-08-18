@@ -46,7 +46,7 @@ bool BabyGnusbSysexCommander::detect()
 
       if (portName == "CocoMidi")
       {
-//        std::cout << ">> babygnusbuino detected.. connecting to midi port!\n";
+        std::cout << ">> CocoMidi detected.. connecting to midi port!\n";
         midiout->openPort( i );
         return true;
       }

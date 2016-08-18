@@ -729,14 +729,14 @@ static int usbasp_open(PROGRAMMER * pgm, char * port)
 
         if (usbasp_babymidignusbuino_detect())
         {
-            fprintf(stderr, "\n> CocoMidi detected  ... trying to reset device \n");
+            //fprintf(stderr, "\n> CocoMidi detected  ... trying to reset device \n");
             usbasp_babymidignusbuino_kick();
         }else{
             fprintf(stderr, "\n> CocoMidi not detected  ... \n");
+            fprintf(stderr, "> PLease replug your device now... \n");
         }
 
         // fprintf(stderr, "> MIDIBabygnusbuino not found ... \n");
-        fprintf(stderr, "> PLease replug your device now... \n");
         fprintf(stderr, "> Waiting for %i seconds.. \n", timeout);
     // }else{
         // fprintf(stderr, "> MIDIBabygnusbuino found sending start bootloader command ... \n");
@@ -811,9 +811,7 @@ static void usbasp_close(PROGRAMMER * pgm)
   /* nothing for usb 0.1 ? */
 #endif
 
-#ifdef WIN32NATIVE
 babygnusbuino_sysex_delete(babygnusbuino_sysex_commander);
-#endif
 
 }
 
