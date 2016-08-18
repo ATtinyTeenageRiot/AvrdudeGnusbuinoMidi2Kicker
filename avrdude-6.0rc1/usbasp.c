@@ -764,7 +764,7 @@ static int usbasp_open(PROGRAMMER * pgm, char * port)
 				found_usbasp = usbasp_findusb(pgm, port);
 
 				if (found_usbasp) {
-					//fprintf(stderr, "> Found usbasp! ... \n");
+					fprintf(stderr, "> Found usbasp! ... \n");
 					usbasp_handle = usbasp_try_open(pgm, port);		
 					if (usbasp_handle > -1) break;			
 				}
